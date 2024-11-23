@@ -4,8 +4,8 @@
 
 ;; Some basic settings
 (setq inhibit-startup-screen t)
-(menu-bar-mode 0)
-(tool-bar-mode 0)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
 (tooltip-mode -1)
 (set-fringe-mode 10)
 (setq display-line-numbers-type 'relative)
