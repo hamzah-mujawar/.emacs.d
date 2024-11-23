@@ -1,0 +1,11 @@
+/.mc-lists.el
+/auto-save-list/
+/early-init.el~
+/eln-cache/
+/elpa/
+/elpaca/
+/eshell/
+/history
+/transient/
+*.el~
+*.elc
