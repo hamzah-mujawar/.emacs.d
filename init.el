@@ -1,7 +1,3 @@
-;;Initialise elpaca before anything else
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-(require 'bootstrap-elpaca)
-
 ;; Some basic settings
 (setq inhibit-startup-screen t)
 (menu-bar-mode -1)
@@ -11,6 +7,7 @@
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode t)
 (setq-default line-spacing 0.2)
+(global-auto-revert-mode t)
 
 ;; Disable line numbers on some modes
 (dolist (mode '(org-mode-hook
@@ -23,7 +20,7 @@
 (customize-set-variable 'scroll-bar-mode nil)
 (customize-set-variable 'horizontal-scroll-bar-mode nil)
 (set-face-attribute 'default nil :height 160 :family "CaskaydiaCove Nerd Font Mono")
-(setq backup-directory-alist '(("," . "~/.emacs_saves"))) 
+(setq backup-directory-alist '(("." . "~/.emacs_saves/")))
 
 ;; transparency
 (add-to-list 'default-frame-alist '(alpha-background . 90))
@@ -33,6 +30,11 @@
       org-startup-folded 'content
       org-cycle-separator-lines 2
       org-fontify-quote-and-verse-blocks t)
+
+;;Initialise elpaca before anything else
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(require 'bootstrap-elpaca)
+
 
 ;;Setting up nerd-icons prereq for doom-modeline
 (use-package nerd-icons :ensure t)

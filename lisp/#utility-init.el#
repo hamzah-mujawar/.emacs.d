@@ -5,8 +5,6 @@
 ;; the best package ever
 (use-package magit :ensure t :demand t)
 
-;;emmet-mode
-(use-package emmet-mode :ensure t :demand t)
 
 ;; multiple cursors
 ;; Ensure multiple-cursors is managed by elpaca
