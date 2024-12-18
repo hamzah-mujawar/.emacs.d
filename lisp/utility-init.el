@@ -47,4 +47,10 @@
 
 (define-key org-babel-map (kbd "J") 'ob-js-insert-session-header-arg)
 
+;; Mermaid mode for graphs
+(use-package mermaid-mode :ensure t :demand t)
+
+;;vundo
+(use-package vundo :ensure t :demand t)
+
 (provide 'utility-init)

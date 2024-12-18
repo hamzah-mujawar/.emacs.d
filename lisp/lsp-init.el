@@ -1,9 +1,3 @@
-(add-hook 'c-mode 'eglot-ensure)
-(add-hook 'js-mode 'eglot-ensure)
-(add-hook 'html-mode 'eglot-ensure)
-(add-hook 'css-mode 'eglot-ensure)
-(add-hook 'emacs-lisp-mode-hook 'eglot-ensure)
-
 ;; Enable company globally
 (use-package company
   :ensure t
@@ -24,10 +18,23 @@
 
 (add-hook 'eglot-managed-mode-hook #'eglot-company-integration)
 
-:;; Install js2-mode
+;; Install js2-mode
 (use-package js2-mode
   :ensure t
   :mode "\\.js\\'"
   :demand t)
+
+(use-package tree-sitter
+  :ensure t
+  :demand t
+  :config
+  (require 'tree-sitter)
+  (require 'tree-sitter-langs)
+  (global-tree-sitter-mode))
+
+(use-package tree-sitter-langs :ensure t :demand t)
+
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+
 
 (provide 'lsp-init)
