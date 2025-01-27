@@ -9,6 +9,7 @@
 (setq-default line-spacing 0.2)
 (global-auto-revert-mode t)
 
+
 ;; Disable line numbers on some modes
 (dolist (mode '(org-mode-hook
 		term-mode-hook
@@ -49,6 +50,15 @@
   :ensure t
   :init (doom-modeline-mode 1))
 
+;;Tramp workaround fix: https://stat.ethz.ch/pipermail/ess-help/2012-January/007396.html
+(require 'tramp)
+(require 'tramp-sh)
+(tramp-set-completion-function "ssh"
+   '((tramp-parse-sconfig "/etc/ssh_config")
+     (tramp-parse-sconfig "~/.ssh/config")))
+
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
 ;; Packages, functions, etc.
 (require 'completion-init)
 (require 'theme-init)
@@ -70,4 +80,5 @@
  '(custom-safe-themes
    '("014cb63097fc7dbda3edf53eb09802237961cbb4c9e9abd705f23b86511b0a69"
      "88f7ee5594021c60a4a6a1c275614103de8c1435d6d08cc58882f920e0cec65e"
-     default)))
+     default))
+ '(warning-suppress-log-types '((elpaca core 30.0.92))))
