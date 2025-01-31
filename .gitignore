@@ -9,3 +9,4 @@
 /transient/
 *.el~
 *.elc
+/url

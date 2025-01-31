@@ -41,11 +41,11 @@
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
-;;Setting up nerd-icons prereq for doom-modeline
+;; ;;Setting up nerd-icons prereq for doom-modeline
 (use-package nerd-icons :ensure t)
 
-;;doom-modeline needs to load before any other packages
-;; TODO find a way to tuck it away into another file
+;; ;;doom-modeline needs to load before any other packages
+;; ;; TODO find a way to tuck it away into another file
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
@@ -60,6 +60,7 @@
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 ;; Packages, functions, etc.
+(require 'meow-my-beloved)
 (require 'completion-init)
 (require 'theme-init)
 (require 'utility-init)
@@ -81,4 +82,5 @@
    '("014cb63097fc7dbda3edf53eb09802237961cbb4c9e9abd705f23b86511b0a69"
      "88f7ee5594021c60a4a6a1c275614103de8c1435d6d08cc58882f920e0cec65e"
      default))
+ '(package-selected-packages nil)
  '(warning-suppress-log-types '((elpaca core 30.0.92))))
