@@ -1,3 +1,7 @@
+(use-package evil-matchit
+  :ensure t
+  :demand t)
+
 (use-package meow
   :ensure t
   :config
@@ -25,6 +29,7 @@
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
     (meow-normal-define-key
+     '("%" . evilmi-jump-items-native)
      '("0" . meow-expand-0)
      '("9" . meow-expand-9)
      '("8" . meow-expand-8)
@@ -88,5 +93,6 @@
      '("<escape>" . ignore)))
   (meow-setup)
   (meow-global-mode 1))
+
 
 (provide 'meow-my-beloved)
