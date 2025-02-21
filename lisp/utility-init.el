@@ -1,9 +1,14 @@
 ;; Utilities
 
+(use-package llama :ensure t :demand t)
 ;;transient is a prereq of magit
 (use-package transient :ensure t :demand t)
 ;; the best package ever
-(use-package magit :ensure t :demand t)
+(use-package magit
+  :ensure t
+  :after nerd-icons
+  :custom
+  (magit-format-file-function #'magit-format-file-nerd-icons)) 
 ;;emmet-mode
 (use-package emmet-mode :ensure t :demand t)
 
@@ -37,5 +42,13 @@
 
 ;;vundo
 (use-package vundo :ensure t :demand t)
+
+;;verb
+(use-package verb :ensure t :demand t)
+(use-package org
+  :ensure t
+  :demand t
+  :mode ("\\.org\\'" . org-mode)
+  :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 (provide 'utility-init)
