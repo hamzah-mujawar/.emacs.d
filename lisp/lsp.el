@@ -1,37 +1,58 @@
-(use-package cape :ensure t)
-
+;; Enable Corfu completion UI
+;; See the Corfu README for more configuration tips.
 (use-package corfu
   :ensure t
-  ;; Optional customizations
   :custom
+  (corfu-cycle t)
   (corfu-auto t)
-  (corfu-auto-delay 0.2)
-  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-
-  ;; Enable Corfu only for certain modes. See also `global-corfu-modes'.
-  :hook ((prog-mode . corfu-mode)
-	 (nix-mode  . corfu-mode))
-
+  (corfu-quit-at-boundary t)
+  (corfu-quit-no-match nil)
+  (corfu-on-exact-match nil)
+  (setq corfu-auto-delay 0.2)
+  :hook
+  ((prog-mode . corfu-mode)
+   (nix-mode . corfu-mode)
+   (org-mode . corfu-mode))
   :init
+  (global-corfu-mode))
 
-  ;; Recommended: Enable Corfu globally.  Recommended since many modes provide
-  ;; Capfs and Dabbrev can be used globally (M-/).  See also the customization
-  ;; variable `global-corfu-modes' to exclude certain modes.
-  (global-corfu-mode)
+;; Add extensions
+(use-package cape
+  :ensure t
+  ;; Bind prefix keymap providing all Cape commands under a mnemonic key.
+  ;; Press C-c p ? to for help.
+  :bind ("C-c p" . cape-prefix-map) ;; Alternative key: M-<tab>, M-p, M-+
+  ;; Alternatively bind Cape commands individually.
+  ;; :bind (("C-c p d" . cape-dabbrev)
+  ;;        ("C-c p h" . cape-history)
+  ;;        ("C-c p f" . cape-file)
+  ;;        ...)
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-elisp-block)
+  ;; (add-hook 'completion-at-point-functions #'cape-history)
+  ;; ...
+   )
 
-  ;; Enable optional extension modes:
-  ;; (corfu-history-mode)
-  ;; (corfu-popupinfo-mode)
-  )
+(unload-feature 'eldoc t)
+(setq custom-delayed-init-variables '())
+(defvar global-eldoc-mode nil)
+
+(elpaca eldoc
+  (require 'eldoc)
+  (global-eldoc-mode))
 
 ;; Installing eglot and flymake
 (use-package flymake :ensure t)
-(use-package eglot :ensure t)
+
+(use-package eglot :ensure t
+  :custom
+  (eglot-stay-out-of '(yasnippet)))
 
 
 (add-hook 'prog-mode-hook
@@ -41,58 +62,27 @@
 (use-package nix-ts-mode :ensure t
   :mode "\\.nix\\'")
 
-(use-package jtsx
-  :ensure t
-  :mode (("\\.jsx?\\'" . jtsx-jsx-mode)
-         ("\\.tsx\\'" . jtsx-tsx-mode)
-         ("\\.ts\\'" . jtsx-typescript-mode))
-  :commands jtsx-install-treesit-language
-  :hook ((jtsx-jsx-mode . hs-minor-mode)
-         (jtsx-tsx-mode . hs-minor-mode)
-         (jtsx-typescript-mode . hs-minor-mode))
+(use-package flymake-jsts
+  :ensure '(flymake-jsts :type git :host github :repo "orzechowskid/flymake-jsts" :branch "main")
   :custom
-  ;; Optional customizations
-  ;; (js-indent-level 2)
-  ;; (typescript-ts-mode-indent-offset 2)
-  ;; (jtsx-switch-indent-offset 0)
-  ;; (jtsx-indent-statement-block-regarding-standalone-parent nil)
-  ;; (jtsx-jsx-element-move-allow-step-out t)
-  (jtsx-enable-jsx-electric-closing-element t)
-  (jtsx-enable-electric-open-newline-between-jsx-element-tags t)
-  ;; (jtsx-enable-jsx-element-tags-auto-sync nil)
-  ;; (jtsx-enable-all-syntax-highlighting-features t)
-  :config
-  (defun jtsx-bind-keys-to-mode-map (mode-map)
-    "Bind keys to MODE-MAP."
-    (define-key mode-map (kbd "C-c C-j") 'jtsx-jump-jsx-element-tag-dwim)
-    (define-key mode-map (kbd "C-c j o") 'jtsx-jump-jsx-opening-tag)
-    (define-key mode-map (kbd "C-c j c") 'jtsx-jump-jsx-closing-tag)
-    (define-key mode-map (kbd "C-c j r") 'jtsx-rename-jsx-element)
-    (define-key mode-map (kbd "C-c <down>") 'jtsx-move-jsx-element-tag-forward)
-    (define-key mode-map (kbd "C-c <up>") 'jtsx-move-jsx-element-tag-backward)
-    (define-key mode-map (kbd "C-c C-<down>") 'jtsx-move-jsx-element-forward)
-    (define-key mode-map (kbd "C-c C-<up>") 'jtsx-move-jsx-element-backward)
-    (define-key mode-map (kbd "C-c C-S-<down>") 'jtsx-move-jsx-element-step-in-forward)
-    (define-key mode-map (kbd "C-c C-S-<up>") 'jtsx-move-jsx-element-step-in-backward)
-    (define-key mode-map (kbd "C-c j w") 'jtsx-wrap-in-jsx-element)
-    (define-key mode-map (kbd "C-c j u") 'jtsx-unwrap-jsx)
-    (define-key mode-map (kbd "C-c j d n") 'jtsx-delete-jsx-node)
-    (define-key mode-map (kbd "C-c j d a") 'jtsx-delete-jsx-attribute)
-    (define-key mode-map (kbd "C-c j t") 'jtsx-toggle-jsx-attributes-orientation)
-    (define-key mode-map (kbd "C-c j h") 'jtsx-rearrange-jsx-attributes-horizontally)
-    (define-key mode-map (kbd "C-c j v") 'jtsx-rearrange-jsx-attributes-vertically))
-    
-  (defun jtsx-bind-keys-to-jtsx-jsx-mode-map ()
-      (jtsx-bind-keys-to-mode-map jtsx-jsx-mode-map))
+  (flymake-jsts/debug 1))
 
-  (defun jtsx-bind-keys-to-jtsx-tsx-mode-map ()
-      (jtsx-bind-keys-to-mode-map jtsx-tsx-mode-map))
-
-  (add-hook 'jtsx-jsx-mode-hook 'jtsx-bind-keys-to-jtsx-jsx-mode-map)
-  (add-hook 'jtsx-tsx-mode-hook 'jtsx-bind-keys-to-jtsx-tsx-mode-map))
-
+(use-package css-in-js-mode
+  :ensure '(css-in-js-mode :type git :host github :repo "orzechowskid/tree-sitter-css-in-js")
+  :custom
+  (css-in-js-mode-fetch-shared-library t))
+  
+(use-package tsx-mode
+  :ensure '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el" :branch "emacs30")
+  :defer t
+  :mode "\\.tsx\\'"
+  :custom
+  (tsx-mode-enable-css-in-js t))
+ 
+(add-to-list 'auto-mode-alist '("\\.[jt]s[x]?\\'" . tsx-mode))
 
 (use-package lsp-mode :ensure t :hook ((lsp-mode . lsp-enable-which-key-integration)))
+
 ;; configuring eglot to work tinymist and nixd
 (with-eval-after-load 'eglot
   (dolist (mode '((nix-mode . ("nixd"))))
@@ -104,8 +94,15 @@
 (add-hook 'typst-ts-mode-hook 'eglot-ensure)
 (add-hook 'nix-ts-mode-hook 'eglot-ensure)
 
-(use-package eglot-java
-  :ensure t)
+(use-package qml-ts-mode
+  :ensure nil
+  :mode "\\.qml\\'")
+
+(with-eval-after-load 'eglot
+  (dolist (mode '((qml-ts-mode . ("qmlls"))))
+    (add-to-list 'eglot-server-programs mode)))
+
+(add-hook 'qml-ts-mode-hook 'eglot-ensure)
 
 (use-package java-ts-mode
   :ensure nil
@@ -115,9 +112,15 @@
   :config
   (add-to-list 'major-mode-remap-alist '(java-mode . java-ts-mode)))
 
+(use-package kdl-mode
+  :ensure t
+  :mode "\\.kdl\\'")
+
+
 (use-package yasnippet :ensure t
   :config
-  (yas-global-mode 1))
+  (yas-global-mode 1)
+  (define-key yas-minor-mode-map (kbd "C-c TAB") 'yas-expand))
 
 (use-package ggtags :ensure t
   :config
@@ -135,6 +138,22 @@
   (define-key ggtags-mode-map (kbd "C-c g t") 'ggtags-find-definition)
   (define-key ggtags-mode-map (kbd "M-?")     'ggtags-show-definition)
   (define-key ggtags-mode-map (kbd "M-,")     'pop-tag-mark)
-)
+  (add-hook 'c++-ts-mode-hook (lambda()
+			  (ggtags-mode 1))))
+
+(add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+
+(with-eval-after-load 'eglot
+  (dolist (mode '((c++-ts-mode . ("ccls"))))
+    (add-to-list 'eglot-server-programs mode)))
+
+(add-hook 'c++-ts-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+
+(use-package org-block-capf
+  :ensure '(org-block-capf :type git :host github :repo "xenodium/org-block-capf")
+  :after org
+  :hook (org-mode . org-block-capf-add-to-completion-at-point-functions))
+
 
 (provide 'lsp)

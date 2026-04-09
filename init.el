@@ -11,9 +11,9 @@
 (customize-set-variable 'scroll-bar-mode nil)
 (customize-set-variable 'horizontal-scroll-bar-mode nil)
 (add-to-list 'default-frame-alist
-             '(font . "CaskaydiaMono NF-12"))
+             '(font . "Miracode-12"))
 (setq treesit-font-lock-level 4)
-
+(global-hl-line-mode)
 
 ;; disable pinch
 (global-set-key (kbd "<pinch>") 'ignore)
@@ -38,13 +38,22 @@
       org-cycle-separator-lines 2
       org-fontify-quote-and-verse-blocks t)
 
+;; disable query replace regexp not capitalising first word
+(setq case-replace nil)
+
 ;; Add "lisp" folder to emacs user directory
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 
+;; Disable global-hl-line-mode in vterm
+(add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+
 ;; BEFORE we do anything else we want to configure elpaca
 (require 'elpaca)
+
+;; utilities
+(require 'utility)
 
 ;; Then we load up meow (my favourite plugin)
 (require 'meow-my-beloved)
@@ -55,8 +64,6 @@
 ;; Completion (Vertico, Orderless, etc.)
 (require 'completion)
 
-;; utilities
-(require 'utility)
 
 ;; Load LSP stuff last
 (require 'lsp)
@@ -66,8 +73,17 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(flymake-jsts-executable-name-alist
+   '((eslint . "eslint") (oxlint . "oxlint") (biome . "biome")
+     (eslint_d . "eslint_d")))
+ '(flymake-jsts-project-markers-alist
+   '((eslint_d "eslint.config.js" "eslint.config.mjs" "eslint.config.cjs"
+	       "package.json")
+     (oxlint ".oxlintrc.json" "package.json")
+     (biome "biome.json" "biome.jsonc" "package.json")))
  '(highlight-indent-guides-method 'character)
  '(package-selected-packages '(eglot magit nix-mode))
+ '(tsx-mode-enable-lsp t)
  '(warning-suppress-log-types '((org-element org-element-parser))))
 
 (custom-set-faces

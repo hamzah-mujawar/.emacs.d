@@ -1,9 +1,22 @@
+(use-package smartparens
+  :ensure smartparens  ;; install the package
+  :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
+  :config
+  ;; load default config
+  (require 'smartparens-config))
+
+
 (use-package evil-matchit
-  :ensure t
-  :demand t)
+  :ensure t)
+
+(defun nt-wrap-string () (interactive) (sp-wrap-with-pair "\""))
+(defun nt-back-transpose () (interactive) (sp-transpose-sexp -1))
+
+(use-package avy :ensure t)
 
 (use-package meow
   :ensure t
+  :after evil-matchit
   :config
   (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -70,9 +83,11 @@
      '("L" . meow-right-expand)
      '("m" . meow-join)
      '("n" . meow-search)
+     '("N" . avy-goto-char-timer)
      '("o" . meow-block)
      '("O" . meow-to-block)
      '("p" . meow-yank)
+     '("P" . meow-paren-mode)
      '("q" . meow-quit)
      '("Q" . meow-goto-line)
      '("r" . meow-replace)
@@ -90,9 +105,36 @@
      '("Y" . meow-sync-grab)
      '("z" . meow-pop-selection)
      '("'" . repeat)
-     '("<escape>" . ignore)))
+     '("<escape>" . ignore))
+    (setq meow-paren-keymap (make-keymap))
+    (meow-define-state paren
+      "paren state"
+      :lighter " [P]"
+      :keymap meow-paren-keymap)
+    (meow-define-keys 'paren
+      '("<escape>" . meow-normal-mode)
+      '("b" . sp-backward-sexp)
+      '("f" . sp-forward-sexp)
+      '("p" . sp-down-sexp)
+      '("n" . sp-up-sexp)
+      '("o s" . sp-wrap-square)
+      '("o r" . sp-wrap-round)
+      '("o c" . sp-wrap-curly)
+      '("o g" . nt-wrap-string)
+      '("O" . sp-unwrap-sexp)
+      '("b" . sp-slurp-hybrid-sexp)
+      '("x" . sp-forward-barf-sexp)
+      '("k" . sp-backward-barf-sexp)
+      '("j" . sp-backward-slurp-sexp)
+      '("s" . sp-raise-sexp)
+      '("." . sp-absorb-sexp)
+      '("," . sp-split-sexp)
+      '("y" . sp-transpose-sexp)
+      '("a" . sp-beginning-of-sexp)
+      '("e" . sp-end-of-sexp)
+      '("Y" . nt-back-transpose)
+      '("u" . meow-undo)))
   (meow-setup)
   (meow-global-mode 1))
-
 
 (provide 'meow-my-beloved)
