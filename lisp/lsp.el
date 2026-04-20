@@ -50,7 +50,7 @@
 ;; Installing eglot and flymake
 (use-package flymake :ensure t)
 
-(use-package eglot :ensure t
+(use-package eglot :ensure nil
   :custom
   (eglot-stay-out-of '(yasnippet)))
 
@@ -62,26 +62,6 @@
 (use-package nix-ts-mode :ensure t
   :mode "\\.nix\\'")
 
-(use-package flymake-jsts
-  :ensure '(flymake-jsts :type git :host github :repo "orzechowskid/flymake-jsts" :branch "main")
-  :custom
-  (flymake-jsts/debug 1))
-
-(use-package css-in-js-mode
-  :ensure '(css-in-js-mode :type git :host github :repo "orzechowskid/tree-sitter-css-in-js")
-  :custom
-  (css-in-js-mode-fetch-shared-library t))
-  
-(use-package tsx-mode
-  :ensure '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el" :branch "emacs30")
-  :defer t
-  :mode "\\.tsx\\'"
-  :custom
-  (tsx-mode-enable-css-in-js t))
- 
-(add-to-list 'auto-mode-alist '("\\.[jt]s[x]?\\'" . tsx-mode))
-
-(use-package lsp-mode :ensure t :hook ((lsp-mode . lsp-enable-which-key-integration)))
 
 ;; configuring eglot to work tinymist and nixd
 (with-eval-after-load 'eglot
@@ -94,23 +74,6 @@
 (add-hook 'typst-ts-mode-hook 'eglot-ensure)
 (add-hook 'nix-ts-mode-hook 'eglot-ensure)
 
-(use-package qml-ts-mode
-  :ensure nil
-  :mode "\\.qml\\'")
-
-(with-eval-after-load 'eglot
-  (dolist (mode '((qml-ts-mode . ("qmlls"))))
-    (add-to-list 'eglot-server-programs mode)))
-
-(add-hook 'qml-ts-mode-hook 'eglot-ensure)
-
-(use-package java-ts-mode
-  :ensure nil
-  :after eglot
-  :hook ((java-ts-mode . eglot-ensure)
-	 (java-mode . java-ts-mode))
-  :config
-  (add-to-list 'major-mode-remap-alist '(java-mode . java-ts-mode)))
 
 (use-package kdl-mode
   :ensure t

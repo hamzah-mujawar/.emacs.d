@@ -14,6 +14,7 @@
              '(font . "Miracode-12"))
 (setq treesit-font-lock-level 4)
 (global-hl-line-mode)
+(modify-all-frames-parameters '((internal-border-width . 15)))
 
 ;; disable pinch
 (global-set-key (kbd "<pinch>") 'ignore)
@@ -82,9 +83,12 @@
      (oxlint ".oxlintrc.json" "package.json")
      (biome "biome.json" "biome.jsonc" "package.json")))
  '(highlight-indent-guides-method 'character)
+ '(org-agenda-files '("~/cplusplusrepo/practiceH/learncpp/chapter10.org"))
  '(package-selected-packages '(eglot magit nix-mode))
  '(tsx-mode-enable-lsp t)
- '(warning-suppress-log-types '((org-element org-element-parser))))
+ '(warning-suppress-log-types
+   '((emacs) (emacs) (emacs) (elpaca installer)
+     (org-element org-element-parser))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

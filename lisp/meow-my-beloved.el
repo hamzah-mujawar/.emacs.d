@@ -10,6 +10,7 @@
   :ensure t)
 
 (defun nt-wrap-string () (interactive) (sp-wrap-with-pair "\""))
+(defun nt-wrap-star () (interactive) (sp-wrap-with-pair "\*"))
 (defun nt-back-transpose () (interactive) (sp-transpose-sexp -1))
 
 (use-package avy :ensure t)
@@ -121,6 +122,7 @@
       '("o r" . sp-wrap-round)
       '("o c" . sp-wrap-curly)
       '("o g" . nt-wrap-string)
+      '("o t" . nt-wrap-star)
       '("O" . sp-unwrap-sexp)
       '("b" . sp-slurp-hybrid-sexp)
       '("x" . sp-forward-barf-sexp)

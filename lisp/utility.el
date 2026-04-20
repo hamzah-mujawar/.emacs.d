@@ -1,20 +1,5 @@
 (use-package vundo :ensure t)
 
-(use-package typst-ts-mode
-  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "develop")
-  :custom
-  (typst-ts-watch-options (list (concat "--root=" (expand-file-name "~/thesis_stuff/PLR_PDF/")) "--open"))
-  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
-  (typst-ts-mode-enable-raw-blocks-highlight t)
-  :config
-  (keymap-set typst-ts-mode-map "C-c C-c" #'typst-ts-tmenu))
-
-(defun save-and-export-typst ()
-  (shell-command-to-string (format "tinymist compile --when onSave %s" (shell-quote-argument buffer-file-name))))
-
-  (add-hook 'typst-ts-mode-hook (lambda ()
-				  (add-hook 'after-save-hook #'save-and-export-typst nil t)))
-
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode)
   :bind (("M-$" . jinx-correct)
@@ -49,24 +34,6 @@
   (setq auto-revert-interval 0.5)
   (auto-revert-set-timer))
 
-(use-package howm
-  :ensure t
-  :init
-  ;; 
-  ;; Options: Remove the leading ";" in the following lines if you like.
-  ;; 
-  ;; Format
-  ;(require 'howm-markdown) ;; Write notes in markdown-mode. (*1)
-  (require 'howm-org) ;; Write notes in Org-mode. (*2)
-  ;; 
-  ;; Preferences
-  (setq howm-directory "~/notes") ;; Where to store the files?
-  (setq howm-follow-theme t) ;; Use your Emacs theme colors. (*3)
-  ;; 
-  ;; Performance
-  (setq howm-menu-expiry-hours 1) ;; Cache menu N hours. (*4)
-  (setq howm-menu-refresh-after-save nil) ;; Speed up note saving. (*5)
-  )
 
 (use-package windmove
   :bind
